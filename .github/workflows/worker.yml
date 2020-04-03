@@ -17,4 +17,4 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ${{ secrets.DOCKER_USERNAME }}/complex-worker
-        path: ${{ github.workspace }}/worker
+        path: ./worker
