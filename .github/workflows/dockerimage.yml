@@ -15,4 +15,5 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the client dev Docker image for testing
-      run: docker build . --file ./client/Dockerfile.dev --tag binhrobles/complex-client:$(date +%s)
+      working-directory: ./client
+      run: docker build . --file ./client/Dockerfile.dev --tag binhrobles/complex-client-dev:$(date +%s)
