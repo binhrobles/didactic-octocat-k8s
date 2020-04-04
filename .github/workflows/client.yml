@@ -26,4 +26,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: binhrobles/complex-client
+        tags: latest
         path: client

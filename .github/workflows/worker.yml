@@ -19,4 +19,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: binhrobles/complex-worker
+        tags: latest
         path: worker
