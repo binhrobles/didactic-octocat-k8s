@@ -20,9 +20,6 @@ jobs:
     - name: Test client
       run: docker run -e CI=true ${{ secrets.DOCKER_USERNAME }}/complex-client-dev npm run test
 
-  publish:
-    runs-on: ubuntu-latest
-    steps:
     - name: Builds and pushes client to dockerhub
       uses: docker/build-push-action@v1
       with:

@@ -11,9 +11,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-    - name: be sneaky
-      id: sneakiness
-      run: ls ${{ github.workspace }}
+    - uses: actions/checkout@v2
+
     - name: Builds and pushes to dockerhub
       uses: docker/build-push-action@v1
       with:
