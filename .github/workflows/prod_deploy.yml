@@ -1,0 +1,106 @@
+# NOTE: DRY?
+name: Prod Deploy
+
+on:
+  push:
+    branches: [ master ]
+    paths-ignore:
+    - 'infra/**'
+
+jobs:
+
+  #### ---- Last tests ---- ####
+  test_client:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Build the client dev Docker image for testing
+      working-directory: ./client
+      run: docker build . --file ./Dockerfile.dev --tag ${{ secrets.DOCKER_USERNAME }}/complex-client-dev
+
+    - name: Test client
+      run: docker run -e CI=true ${{ secrets.DOCKER_USERNAME }}/complex-client-dev npm run test
+
+  #### ---- Vend to DockerHub ---- ####
+  publish_client:
+    needs: test_client
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Builds and pushes client to dockerhub
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: binhrobles/complex-client
+        tag_with_ref: true
+        path: client
+
+  publish_nginx:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Builds and pushes to dockerhub
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: binhrobles/complex-nginx
+        tag_with_ref: true
+        path: nginx
+
+  publish_server:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Builds and pushes to dockerhub
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: binhrobles/complex-server
+        tag_with_ref: true
+        path: server
+
+  publish_worker:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Builds and pushes to dockerhub
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: binhrobles/complex-worker
+        tag_with_ref: true
+        path: worker
+
+  #### ---- Notify EBS ---- ####
+  notify_ebs:
+    needs: 
+      - publish_client
+      - publish_nginx
+      - publish_server
+      - publish_worker
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create small zip
+      run: zip deploy.zip Dockerrun.aws.json
+
+    - name: Send it to EB
+      uses: einaregilsson/beanstalk-deploy@v9
+      with:
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: didactic-computing-machine
+        environment_name: DidacticComputingMachine-env-1
+        version_label: ${{ GITHUB_RUN_NUMBER }}
+        region: us-west-2
+        deployment_package: deploy.zip

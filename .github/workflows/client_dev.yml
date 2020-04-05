@@ -1,14 +1,14 @@
-name: React Client Test + Docker Push
+name: React Client Dev
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ dev ]
+    paths:
+      - 'client/*'
 
 jobs:
 
-  test_and_publish:
+  test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -20,11 +20,17 @@ jobs:
     - name: Test client
       run: docker run -e CI=true ${{ secrets.DOCKER_USERNAME }}/complex-client-dev npm run test
 
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
     - name: Builds and pushes client to dockerhub
       uses: docker/build-push-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: binhrobles/complex-client
-        tags: latest
+        tag_with_ref: true
         path: client

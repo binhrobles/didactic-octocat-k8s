@@ -1,10 +1,10 @@
-name: Redis Listener Docker Push
+name: NGINX Dev
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ dev ]
+    paths:
+      - 'nginx/*'
 
 jobs:
 
@@ -18,6 +18,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: binhrobles/complex-worker
-        tags: latest
-        path: worker
+        repository: binhrobles/complex-nginx
+        tag_with_ref: true
+        path: nginx
