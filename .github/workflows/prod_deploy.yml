@@ -24,7 +24,8 @@ jobs:
 
   #### ---- Vend to DockerHub ---- ####
   publish_client:
-    needs: test_client
+    needs: 
+      - test_client
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
