@@ -1,0 +1,67 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  DBUser:
+    NoEcho: true
+    Type: String
+  DBPassword:
+    NoEcho: true
+    Type: String
+
+Resources:
+  #### ---- EBS ---- ####
+
+  EBSSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Facilitates communication between EBS, Elasticache, and RDS
+
+  #### ---- Elasticache ---- ####
+
+  ElasticacheSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Elasticache Security Group
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 6379
+          ToPort: 6379
+          SourceSecurityGroupName: !Ref EBSSecurityGroup
+
+  ElasticacheCluster:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      AutoMinorVersionUpgrade: true
+      Engine: redis
+      CacheNodeType: cache.t2.micro
+      NumCacheNodes: 1
+      VpcSecurityGroupIds:
+        - !GetAtt 
+          - ElasticacheSecurityGroup
+          - GroupId
+
+  #### ---- Postgres RDS ---- ####
+
+  PostgresSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Open database for access
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 5432
+        ToPort: 5432
+        SourceSecurityGroupName: !Ref EBSSecurityGroup
+
+  PostgresRDS:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllocatedStorage: '20'
+      DBInstanceClass: db.t2.micro
+      Engine: postgres
+      MasterUsername: !Ref DBUser
+      MasterUserPassword: !Ref DBPassword
+      VPCSecurityGroups: 
+        - !GetAtt 
+          - PostgresSecurityGroup
+          - GroupId
