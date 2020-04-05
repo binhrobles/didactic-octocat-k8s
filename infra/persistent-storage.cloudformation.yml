@@ -10,12 +10,12 @@ Parameters:
     Type: String
 
 Resources:
-  #### ---- EBS ---- ####
+  #### ---- EB ---- ####
 
-  EBSSecurityGroup:
+  EBecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: Facilitates communication between EBS, Elasticache, and RDS
+      GroupDescription: Facilitates communication between EB, Elasticache, and RDS
 
   #### ---- Elasticache ---- ####
 
@@ -27,7 +27,7 @@ Resources:
         - IpProtocol: tcp
           FromPort: 6379
           ToPort: 6379
-          SourceSecurityGroupName: !Ref EBSSecurityGroup
+          SourceSecurityGroupName: !Ref EBecurityGroup
 
   ElasticacheCluster:
     Type: AWS::ElastiCache::CacheCluster
@@ -51,7 +51,7 @@ Resources:
       - IpProtocol: tcp
         FromPort: 5432
         ToPort: 5432
-        SourceSecurityGroupName: !Ref EBSSecurityGroup
+        SourceSecurityGroupName: !Ref EBecurityGroup
 
   PostgresRDS:
     Type: AWS::RDS::DBInstance
