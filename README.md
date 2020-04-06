@@ -15,6 +15,7 @@ Intentionally complicated React, Node, multi-container Docker project with Githu
 - created separate test/build workflows per container for dev
   - had to condense them into a single workflow for prod
   - these containers would probably be in separate repos anyway
+- Proper syntax for env/context variables: https://help.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contexts
 
 ### Docker Build-Push Action
 - Remember to first check out the repo if using it in the job
@@ -24,4 +25,3 @@ Intentionally complicated React, Node, multi-container Docker project with Githu
 - Why not Terraform?
 - Rollbacks?
 - Separate CI from CD
-- 
