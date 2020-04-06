@@ -5,24 +5,28 @@
       "name": "client",
       "image": "binhrobles/complex-client",
       "hostname": "client",
+      "memory": 128,
       "essential": false
     },
     {
       "name": "server",
       "image": "binhrobles/complex-server",
       "hostname": "api",
+      "memory": 128,
       "essential": false
     },
     {
       "name": "worker",
       "image": "binhrobles/complex-worker",
       "hostname": "worker",
+      "memory": 128,
       "essential": false
     },
     {
       "name": "nginx",
       "image": "binhrobles/complex-nginx",
       "essential": true,
+      "memory": 128,
       "portMappings": [
         {
           "hostPort": 80,

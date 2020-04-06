@@ -102,6 +102,6 @@ jobs:
         aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         application_name: didactic-computing-machine
         environment_name: DidacticComputingMachine-env-1
-        version_label: $GITHUB_RUN_NUMBER
+        version_label: $GITHUB_RUN_ID
         region: us-west-2
         deployment_package: deploy.zip
