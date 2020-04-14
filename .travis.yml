@@ -1,5 +1,4 @@
 ---
-sudo: required
 services:
   - docker
 
@@ -8,9 +7,26 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_248d61edfafe_key -iv $encrypted_248d61edfafe_iv -in service_account.json.enc -out service_account.json -d
 
   # download GCP SDK and source it on travis instance
-  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - curl https://sdk.cloud.google.com > install.sh
+  - bash install.sh --disable-prompts
   - source $HOME/google-cloud-sdk/path.bash.inc
 
   # configure k8s and gcp interface
   - gcloud components update kubectl
   - gcloud auth active-service-account --key-file service-account.json
+  - gcloud config set project octocat-k8s
+  - gcloud config set compute/zon us-west1-a
+  - gcloud container clusters get-credentials multi-cluster
+
+  # login docker and build test react image
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  #- docker build -t binhrobles binhrobles/react-test -f ./client/Dockerfile.dev
+
+script:
+  #- docker run -e CI=true binhrobles/react-test npm run test
+
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
