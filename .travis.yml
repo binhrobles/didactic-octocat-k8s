@@ -28,6 +28,7 @@ before_install:
   #- docker build -t binhrobles binhrobles/react-test -f ./client/Dockerfile.dev
 
 script:
+  - echo "fake tests"
   #- docker run -e CI=true binhrobles/react-test npm run test
 
 deploy:
