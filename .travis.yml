@@ -14,7 +14,7 @@ before_install:
   # configure k8s and gcp interface
   - gcloud config set disable_prompts true
   - gcloud components update kubectl
-  - gcloud auth active-service-account --key-file service_account.json
+  - gcloud auth activate-service-account --key-file=service_account.json
   - gcloud config set project octocat-k8s
   - gcloud config set compute/zon us-west1-a
   - gcloud container clusters get-credentials multi-cluster
