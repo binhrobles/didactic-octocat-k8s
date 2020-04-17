@@ -8,7 +8,7 @@ spec:
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
-  commonName: binhrobles.com
+  commonName: gcp.binhrobles.com
   dnsNames:
     - gcp.binhrobles.com
   acme:
