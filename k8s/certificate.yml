@@ -11,9 +11,3 @@ spec:
   commonName: gcp.binhrobles.com
   dnsNames:
     - gcp.binhrobles.com
-  acme:
-    config:
-      - http01:
-          ingressClass: nginx
-        domains:
-          - gcp.binhrobles.com
